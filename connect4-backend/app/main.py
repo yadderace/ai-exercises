@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
-from game import Connect4
-from ai import AI
+from app.game import Connect4
+from app.ai import AI
 
 app = FastAPI()
 
