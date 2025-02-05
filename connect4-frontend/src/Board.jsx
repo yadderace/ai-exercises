@@ -67,7 +67,8 @@ const Board = () => {
   };
 
   return (
-    <div>
+    <div className="container">
+      <h1 className="title">Connect 4</h1>
       <div className="board">
         {grid.map((row, rowIndex) => (
           row.map((cell, colIndex) => (

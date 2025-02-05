@@ -1,38 +1,83 @@
+/* Board.css */
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #4a5d89;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.title {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
 .board {
-    display: grid;
-    grid-template-columns: repeat(7, 60px);
-    grid-template-rows: repeat(6, 60px);
-    gap: 5px;
-    background-color: blue;
-    padding: 10px;
-    border-radius: 10px;
-  }
-  
-  .cell {
-    width: 60px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: white;
-    border-radius: 50%;
-  }
-  
-  .piece {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-  }
-  
-  .empty {
-    background-color: lightgray;
-  }
-  
-  .red {
-    background-color: red;
-  }
-  
-  .yellow {
-    background-color: yellow;
-  }
-  
+  display: grid;
+  grid-template-columns: repeat(7, 60px);
+  grid-template-rows: repeat(6, 60px);
+  gap: 5px;
+  background-color: #0077b6;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.cell {
+  width: 60px;
+  height: 60px;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.piece {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.piece.red {
+  background-color: red;
+}
+
+.piece.yellow {
+  background-color: yellow;
+}
+
+.piece.empty {
+  background-color: transparent;
+}
+
+.winner {
+  font-size: 1.5rem;
+  margin-top: 20px;
+  color: #b95e5e;
+}
+
+.reset-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #0077b6;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.reset-button:hover {
+  background-color: #005f87;
+}
