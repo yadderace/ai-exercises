@@ -4,65 +4,43 @@ import "./Board.css";
 const ROWS = 6;
 const COLS = 7;
 
-const checkWinner = (grid) => {
-  // Check horizontal, vertical, and diagonal win conditions
-  for (let row = 0; row < ROWS; row++) {
-    for (let col = 0; col < COLS; col++) {
-      const player = grid[row][col];
-      if (!player) continue;
-      
-      // Check horizontal
-      if (col + 3 < COLS && player === grid[row][col + 1] && player === grid[row][col + 2] && player === grid[row][col + 3]) {
-        return player;
-      }
-      
-      // Check vertical
-      if (row + 3 < ROWS && player === grid[row + 1][col] && player === grid[row + 2][col] && player === grid[row + 3][col]) {
-        return player;
-      }
-      
-      // Check diagonal (bottom-left to top-right)
-      if (row - 3 >= 0 && col + 3 < COLS && player === grid[row - 1][col + 1] && player === grid[row - 2][col + 2] && player === grid[row - 3][col + 3]) {
-        return player;
-      }
-      
-      // Check diagonal (top-left to bottom-right)
-      if (row + 3 < ROWS && col + 3 < COLS && player === grid[row + 1][col + 1] && player === grid[row + 2][col + 2] && player === grid[row + 3][col + 3]) {
-        return player;
-      }
-    }
-  }
-  return null;
-};
 
 const Board = () => {
   const [grid, setGrid] = useState(Array(ROWS).fill().map(() => Array(COLS).fill(null)));
-  const [currentPlayer, setCurrentPlayer] = useState("red");
   const [winner, setWinner] = useState(null);
-
-  const handleClick = (colIndex) => {
-    if (winner) return; // Stop game if there's a winner
+  
+  const handleClick = async (colIndex) => {
     
     const newGrid = grid.map(row => [...row]);
-    
-    for (let row = ROWS - 1; row >= 0; row--) {
-      if (!newGrid[row][colIndex]) {
-        newGrid[row][colIndex] = currentPlayer;
-        setGrid(newGrid);
-        const gameWinner = checkWinner(newGrid);
-        if (gameWinner) {
-          setWinner(gameWinner);
-        } else {
-          setCurrentPlayer(currentPlayer === "red" ? "yellow" : "red");
-        }
-        break;
+    console.log(newGrid);
+    try {
+      const response = await fetch(`http://localhost:8000/play?player_col=${colIndex}`);
+      const data = await response.json();
+      console.log(data)
+      if (data.player_last_move) {
+        const [ row, col ] = [ data.player_last_move.row, data.player_last_move.col ];
+        newGrid[row][col] = "red";
       }
+
+      if (data.ai_last_move) {
+        const [ row, col ] = [ data.ai_last_move.row, data.ai_last_move.col ];
+        newGrid[row][col] = "yellow";
+      }
+
+      setGrid(newGrid)
+
+      if (data.winner) {
+        setWinner(data.winner === 1 ? "red" : "yellow");
+      }
+
+    } catch (error) {
+      console.error("Error playing move:", error);
     }
   };
 
   const resetGame = () => {
+    const response = fetch(`http://localhost:8000/reset`);
     setGrid(Array(ROWS).fill().map(() => Array(COLS).fill(null)));
-    setCurrentPlayer("red");
     setWinner(null);
   };
 
