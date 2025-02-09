@@ -32,10 +32,11 @@ def play_move(player_col: int):
     # Verificar si el jugador ganó
     if game.check_winner(1):
         game.print_board()
-        return {"winner": 1,  "player_last_move": { "row": player_row , "col": player_col }, "ai_last_move": None }
+        return {"winner": 1,  "player_last_move": { "row": player_row , "col": player_col }, "ai_last_move": None, "decision_tree": None }
 
     # La IA hace su movimiento aleatorio
-    ai_col = ai.get_random_move()
+    ai_col, decision_tree = ai.get_minmax_best_move()
+    print(decision_tree)
     ai_row = -1
     if ai_col is not None:
         ai_row = game.drop_piece(ai_col, 2)
@@ -43,13 +44,13 @@ def play_move(player_col: int):
     # Verificar si la IA ganó
     if game.check_winner(2):
         game.print_board()
-        return {"winner": 2,  "player_last_move": { "row": player_row , "col": player_col }, "ai_last_move": { "row": ai_row, "col": ai_col } }
+        return {"winner": 2,  "player_last_move": { "row": player_row , "col": player_col }, "ai_last_move": { "row": ai_row, "col": ai_col }, "decision_tree": decision_tree }
 
     # Imprimir el tablero después de los movimientos
     print(f"Player Move ({play_move, player_row})")
     game.print_board()
 
-    return {"winner": None,  "player_last_move": { "row": player_row , "col": player_col }, "ai_last_move": { "row": ai_row, "col": ai_col } }
+    return {"winner": None,  "player_last_move": { "row": player_row , "col": player_col }, "ai_last_move": { "row": ai_row, "col": ai_col }, "decision_tree": decision_tree }
 
 
 @app.get("/reset")
