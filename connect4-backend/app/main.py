@@ -36,7 +36,6 @@ def play_move(player_col: int):
 
     # La IA hace su movimiento aleatorio
     ai_col, decision_tree = ai.get_minmax_best_move()
-    print(decision_tree)
     ai_row = -1
     if ai_col is not None:
         ai_row = game.drop_piece(ai_col, 2)

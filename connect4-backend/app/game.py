@@ -51,7 +51,6 @@ class Connect4:
         # Horizontal check
         for row in range(ROWS):
             for col in range(COLS - 3):
-                print(f"board[{row}, {col}]")
                 if all(board[row, col + i] == player for i in range(4)):
                     return True
 

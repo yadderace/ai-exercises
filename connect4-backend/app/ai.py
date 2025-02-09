@@ -36,7 +36,7 @@ class AI:
         
         new_board = copy.deepcopy(board)  # Create a deep copy to avoid modifying the original
         for row in range(self.game.ROWS - 1, -1, -1):  # Start from the bottom row
-            if new_board[row][col] == 0:  # Find the first available row in the column
+            if new_board[row][col] == self.game.EMPTY_VALUE:  # Find the first available row in the column
                 new_board[row][col] = player 
                 return new_board 
         return None 
@@ -137,8 +137,8 @@ class AI:
                 "children": []
             }
         
-        valid_moves = [col for col in range(7) if self.game.is_valid_move(col)]
-
+        valid_moves = [col for col in range(7) if self.game.is_valid_move(col, board)]
+        
         best_move = None
         children = []  
         min_value = float('inf')
@@ -147,7 +147,7 @@ class AI:
         if maximizing_player:
             max_eval = float('-inf')
             for col in valid_moves:
-                new_board = self.simulate_move(board, col, self.game.AI_VALUE)  # AI move
+                new_board = self.simulate_move(copy.deepcopy(board), col, self.game.AI_VALUE)  # AI move
                 child_node = self.minimax(new_board, depth - 1, False)
                 children.append(child_node)
 
