@@ -30,9 +30,16 @@ def play_move(player_col: int):
     player_row = game.drop_piece(player_col, 1)
 
     # Verificar si el jugador ganó
-    if game.check_winner(1):
+    player_win, player_winning_positions = game.check_winner(game.HUMAN_VALUE)
+    if player_win:
         game.print_board()
-        return {"winner": 1,  "player_last_move": { "row": player_row , "col": player_col }, "ai_last_move": None, "decision_tree": None }
+        return {
+            "winner": game.HUMAN_VALUE,  
+            "player_last_move": { "row": player_row , "col": player_col }, 
+            "ai_last_move": None, 
+            "decision_tree": None,
+             "winning_positions": player_winning_positions
+        }
 
     # La IA hace su movimiento aleatorio
     ai_col, decision_tree = ai.get_minmax_best_move()
@@ -41,15 +48,28 @@ def play_move(player_col: int):
         ai_row = game.drop_piece(ai_col, 2)
 
     # Verificar si la IA ganó
-    if game.check_winner(2):
+    ai_win, ai_winning_positions = game.check_winner(game.AI_VALUE)
+    if ai_win:
         game.print_board()
-        return {"winner": 2,  "player_last_move": { "row": player_row , "col": player_col }, "ai_last_move": { "row": ai_row, "col": ai_col }, "decision_tree": decision_tree }
+        return {
+            "winner": 2,  
+            "player_last_move": { "row": player_row , "col": player_col }, 
+            "ai_last_move": { "row": ai_row, "col": ai_col }, 
+            "decision_tree": decision_tree,
+            "winning_positions": ai_winning_positions
+        }
 
     # Imprimir el tablero después de los movimientos
     print(f"Player Move ({play_move, player_row})")
     game.print_board()
 
-    return {"winner": None,  "player_last_move": { "row": player_row , "col": player_col }, "ai_last_move": { "row": ai_row, "col": ai_col }, "decision_tree": decision_tree }
+    return {
+        "winner": None,  
+        "player_last_move": { "row": player_row , "col": player_col }, 
+        "ai_last_move": { "row": ai_row, "col": ai_col }, 
+        "decision_tree": decision_tree,
+        "winning_positions": []
+    }
 
 
 @app.get("/reset")

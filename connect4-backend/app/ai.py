@@ -88,9 +88,9 @@ class AI:
         """
         
         """Evaluates the board and returns a score based on AI advantage."""
-        if self.game.check_winner(self.game.AI_VALUE, board):  # AI wins
+        if self.game.check_winner(self.game.AI_VALUE, board)[0]:  # AI wins
             return 100000
-        if self.game.check_winner(self.game.HUMAN_VALUE, board):  # Opponent wins
+        if self.game.check_winner(self.game.HUMAN_VALUE, board)[0]:  # Opponent wins
             return -100000
 
         score = 0
@@ -127,43 +127,53 @@ class AI:
             dict: A dictionary containing the best move and the decision tree of the search.
         """
 
-        if depth == 0 or self.game.check_winner(self.game.HUMAN_VALUE, board) or self.game.check_winner(self.game.AI_VALUE, board):
+        
+        if depth == 0 or self.game.check_winner(self.game.HUMAN_VALUE, board)[0] or self.game.check_winner(self.game.AI_VALUE, board)[0]:
             score = self.evaluate_board(board)
             return {
+                "best_move": None,
                 "move": None,
                 "score": score,
                 "min": score,
                 "max": score,
-                "children": []
+                "children": [],
+                "evaluation": "leaf"
             }
         
         valid_moves = [col for col in range(7) if self.game.is_valid_move(col, board)]
+
+        print("Valid Moves: ", valid_moves)
         
         best_move = None
         children = []  
-        min_value = float('inf')
-        max_value = float('-inf')
+        min_value = 500000
+        max_value = -500000
 
         if maximizing_player:
             max_eval = float('-inf')
             for col in valid_moves:
                 new_board = self.simulate_move(copy.deepcopy(board), col, self.game.AI_VALUE)  # AI move
                 child_node = self.minimax(new_board, depth - 1, False)
+                child_node["move"] = col
                 children.append(child_node)
 
                 if child_node["score"] > max_eval:
                     max_eval = child_node["score"]
                     best_move = col
+                elif child_node["score"] == max_eval:
+                    best_move = random.choice([best_move, col])
                 
                 max_value = max(max_value, child_node["max"])
                 min_value = min(min_value, child_node["min"])
 
             return {
-                "move": best_move,
+                "move": None,
+                "best_move": best_move,
                 "score": max_eval,
                 "min": min_value,
                 "max": max_value,
-                "children": children
+                "children": children,
+                "evaluation": "max"
             }
 
         else:
@@ -171,24 +181,29 @@ class AI:
             for col in valid_moves:
                 new_board = self.simulate_move(copy.deepcopy(board), col, self.game.HUMAN_VALUE)  # Human move
                 child_node = self.minimax(new_board, depth - 1, True)
+                child_node["move"] = col
                 children.append(child_node)
 
                 if child_node["score"] < min_eval:
                     min_eval = child_node["score"]
                     best_move = col
+                elif child_node["score"] == min_eval:
+                    best_move = random.choice([best_move, col])
                 
                 max_value = max(max_value, child_node["max"])
                 min_value = min(min_value, child_node["min"])
 
             return {
-                "move": best_move,
+                "move": None,
+                "best_move": best_move,
                 "score": min_eval,
                 "min": min_value,
                 "max": max_value,
-                "children": children
+                "children": children,
+                "evaluation": "min"
             }
 
     def get_minmax_best_move(self):
         """Returns the best move and the decision tree as JSON."""
         decision_tree = self.minimax(self.game.board, DEFAULT_DEPTH , True)
-        return decision_tree["move"], decision_tree
+        return decision_tree["best_move"], decision_tree

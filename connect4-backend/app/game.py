@@ -31,7 +31,7 @@ class Connect4:
                 self.board[row][col] = player
                 return row  # Returns the row where the piece was placed
 
-    def check_winner(self, player, board = None):
+    def check_winner(self, player, board=None):
         """
         Check if the given player has won the game.
         This function checks the board for a winning condition for the specified player.
@@ -42,37 +42,45 @@ class Connect4:
             board (list of list of int, optional): The game board to check. If not provided,
                 the current game board (`self.board`) will be used.
         Returns:
-            bool: True if the player has won, False otherwise.
+            tuple: (bool, list) where the first element is True if the player has won, 
+                   False otherwise, and the second element is a list of winning positions 
+                   (each position is a dict with 'row' and 'col' keys).
         """
         
         if board is None:
             board = self.board
 
+        winning_positions = []
+
         # Horizontal check
         for row in range(ROWS):
             for col in range(COLS - 3):
-                if all(board[row, col + i] == player for i in range(4)):
-                    return True
+                if all(board[row][col + i] == player for i in range(4)):
+                    winning_positions = [{'row': row, 'col': col + i} for i in range(4)]
+                    return True, winning_positions
 
         # Vertical check
         for row in range(ROWS - 3):
             for col in range(COLS):
-                if all(board[row + i, col] == player for i in range(4)):
-                    return True
+                if all(board[row + i][col] == player for i in range(4)):
+                    winning_positions = [{'row': row + i, 'col': col} for i in range(4)]
+                    return True, winning_positions
 
-        # Diagonal check (\)
+        # Diagonal check (bottom-left to top-right)
         for row in range(ROWS - 3):
             for col in range(COLS - 3):
-                if all(board[row + i, col + i] == player for i in range(4)):
-                    return True
+                if all(board[row + i][col + i] == player for i in range(4)):
+                    winning_positions = [{'row': row + i, 'col': col + i} for i in range(4)]
+                    return True, winning_positions
 
-        # Diagonal check (/)
-        for row in range(ROWS - 3):
-            for col in range(3, COLS):
-                if all(board[row + i, col - i] == player for i in range(4)):
-                    return True
+        # Diagonal check (top-left to bottom-right)
+        for row in range(3, ROWS):
+            for col in range(COLS - 3):
+                if all(board[row - i][col + i] == player for i in range(4)):
+                    winning_positions = [{'row': row - i, 'col': col + i} for i in range(4)]
+                    return True, winning_positions
 
-        return False
+        return False, []
 
     def is_full(self):
         """Checks if the board is completely full."""
