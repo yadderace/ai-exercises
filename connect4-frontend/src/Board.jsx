@@ -61,7 +61,7 @@ const Board = () => {
           row.map((cell, colIndex) => (
             <div 
               key={`${rowIndex}-${colIndex}`} 
-              className={`cell ${isWinningPosition(rowIndex, colIndex) ? 'winning-cell' : ''}`} 
+              className={`cell ${isWinningPosition(rowIndex, colIndex) ? `winning-cell ${winner}-winning-cell` : ''}`} 
               onClick={() => handleClick(colIndex)}
             >
               <div className={`piece ${cell || "empty"}`}></div>
