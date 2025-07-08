@@ -142,8 +142,6 @@ class AI:
         
         valid_moves = [col for col in range(7) if self.game.is_valid_move(col, board)]
 
-        print("Valid Moves: ", valid_moves)
-        
         best_move = None
         children = []  
         min_value = 500000

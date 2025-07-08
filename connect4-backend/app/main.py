@@ -71,7 +71,6 @@ def play_move(player_col: int):
         "winning_positions": []
     }
 
-
 @app.get("/reset")
 def reset_game():
     """Reinicia el juego (resetea el tablero)."""

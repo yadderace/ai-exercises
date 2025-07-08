@@ -18,6 +18,9 @@ lib/
 lib64/
 parts/
 sdist/
+
+# Virtual Environment
+venv-connect4-backend/
 var/
 wheels/
 share/python-wheels/
